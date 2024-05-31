@@ -236,12 +236,6 @@ struct WeakLearnerTrainer<
   }
 };
 
-
-
-
-
-
-
 // Template for GradBoosting template as a whole
 template<typename WeakLearnerType, typename MatType>
 
