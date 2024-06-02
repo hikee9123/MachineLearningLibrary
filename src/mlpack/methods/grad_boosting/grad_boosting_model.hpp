@@ -27,116 +27,119 @@ namespace mlpack {
  * The model to save to disk.
  */
 class GradBoostingModel {
-    public:
+ public:
 
-    // List of weak learners that can be used in this. 
-    // Only using Decision trees for now, but may be extended to other models too.
-    enum WeakLearnerTypes {
-        DECISION_STUMP
-    };
+  // List of weak learners that can be used in this. 
+  // Only using Decision trees for now, but may be extended to other models too.
+  enum WeakLearnerTypes 
+  {
+    DECISION_STUMP
+  };
 
-    private:
+ private:
 
-    //! The mappings for the labels.
-    arma::Col<size_t> mappings;
+  //! The mappings for the labels.
+  arma::Col<size_t> mappings;
 
-    //! The type of weak learner.
-    size_t weakLearnerType;
+  //! The type of weak learner.
+  size_t weakLearnerType;
 
-    //! Non-NULL if using decision stumps.
-    // For now this is the only one we have as we're only using Decision stumps.
-    // GradBoosting class contains the algorithms for the model implementation.
-    GradBoosting<ID3DecisionStump*> dsBoost;
+  //! Non-NULL if using decision stumps.
+  // For now this is the only one we have as we're only using Decision stumps.
+  // GradBoosting class contains the algorithms for the model implementation.
+  GradBoosting<ID3DecisionStump*> dsBoost;
 
-    //! Number of dimensions in training data.
-    size_t dimensionality;
+  //! Number of dimensions in training data.
+  size_t dimensionality;
 
-    public:
+ public:
 
-    // ### CONSTRUCTORS
+  // ### CONSTRUCTORS
 
-    //! Create an empty GradBoosting model.
-    GradBoostingModel();
+  //! Create an empty GradBoosting model.
+  GradBoostingModel();
 
-    //! Create the GradBoosting model with the given mappings and type.
-    // For now, we're not using this constructor anywhere.
-    GradBoostingModel(const arma::Col<size_t>& mappings,
-                    const size_t weakLearnerType);
+  //! Create the GradBoosting model with the given mappings and type.
+  // For now, we're not using this constructor anywhere.
+  GradBoostingModel(const arma::Col<size_t>& mappings,
+                  const size_t weakLearnerType);
 
 
 
-    // ### OPERATION CONSTRUCTORS
-    // All these operations currently unused.
+  // ### OPERATION CONSTRUCTORS
+  // All these operations currently unused.
 
-    //! Copy constructor.
-    GradBoostingModel(const GradBoostingModel& other);
+  //! Copy constructor.
+  GradBoostingModel(const GradBoostingModel& other);
 
-    //! Move constructor.
-    GradBoostingModel(GradBoostingModel&& other);
+  //! Move constructor.
+  GradBoostingModel(GradBoostingModel&& other);
 
-    //! Copy assignment operator.
-    GradBoostingModel& operator=(const GradBoostingModel& other);
+  //! Copy assignment operator.
+  GradBoostingModel& operator=(const GradBoostingModel& other);
 
-    //! Move assignment operator.
-    GradBoostingModel& operator=(GradBoostingModel&& other);
+  //! Move assignment operator.
+  GradBoostingModel& operator=(GradBoostingModel&& other);
 
-    //! Clean up memory.
-    ~GradBoostingModel();
+  //! Clean up memory.
+  ~GradBoostingModel();
 
-    //! Get the mappings.
-    const arma::Col<size_t>& Mappings() const { return mappings; }
+  //! Get the mappings.
+  const arma::Col<size_t>& Mappings() const { return mappings; }
 
-    //! Modify the mappings.
-    arma::Col<size_t>& Mappings() { return mappings; }
+  //! Modify the mappings.
+  arma::Col<size_t>& Mappings() { return mappings; }
 
-    //! Get the weak learner type.
-    size_t WeakLearnerType() const { return weakLearnerType; }
-    //! Modify the weak learner type.
-    size_t& WeakLearnerType() { return weakLearnerType; }
+  //! Get the weak learner type.
+  size_t WeakLearnerType() const { return weakLearnerType; }
+  //! Modify the weak learner type.
+  size_t& WeakLearnerType() { return weakLearnerType; }
 
-    //! Get the dimensionality of the model.
-    size_t Dimensionality() const { return dimensionality; }
-    //! Modify the dimensionality of the model.
-    size_t& Dimensionality() { return dimensionality; }
+  //! Get the dimensionality of the model.
+  size_t Dimensionality() const { return dimensionality; }
+  //! Modify the dimensionality of the model.
+  size_t& Dimensionality() { return dimensionality; }
 
-    // ### TRAINING
+  // ### TRAINING
 
-    //! Train the model, treat the data is all of the numeric type.
-    void Train(
-        const arma::mat& data,
-        const arma::Row<size_t>& labels,
-        const size_t numClasses,
-        const size_t numModels
-    );
+  //! Train the model, treat the data is all of the numeric type.
+  void Train(
+    const arma::mat& data,
+    const arma::Row<size_t>& labels,
+    const size_t numClasses,
+    const size_t numModels
+  );
 
-    // ### CLASSIFY
+  // ### CLASSIFY
 
-    //! Classify test points. With probability.
-    void Classify(
-        const arma::mat& testData,
-        arma::Row<size_t>& predictions,
-        arma::mat& probabilities
-    );
+  //! Classify test points. With probability.
+  void Classify(
+    const arma::mat& testData,
+    arma::Row<size_t>& predictions,
+    arma::mat& probabilities
+  );
 
-    //! Classify test points. Without probability.
-    void Classify(
-        const arma::mat& testData,
-        arma::Row<size_t>& predictions
-    );
+  //! Classify test points. Without probability.
+  void Classify(
+    const arma::mat& testData,
+    arma::Row<size_t>& predictions
+  );
 
-    //! Serialize the model.
-    template<typename Archive>
-    void serialize(Archive& ar, const uint32_t /* version */) {
-        if (cereal::is_loading<Archive>()) {
-            dsBoost = NULL;
-            delete dsBoost;
-        }
-
-        ar(CEREAL_NVP(mappings));
-        ar(CEREAL_NVP(weakLearnerType));
-        ar(CEREAL_POINTER(dsBoost));
-        ar(CEREAL_NVP(dimensionality));
+  //! Serialize the model.
+  template<typename Archive>
+  void serialize(Archive& ar, const uint32_t /* version */) 
+  {
+    if (cereal::is_loading<Archive>()) 
+    {
+      dsBoost = NULL;
+      delete dsBoost;
     }
+
+    ar(CEREAL_NVP(mappings));
+    ar(CEREAL_NVP(weakLearnerType));
+    ar(CEREAL_POINTER(dsBoost));
+    ar(CEREAL_NVP(dimensionality));
+  }
 };
 
 }

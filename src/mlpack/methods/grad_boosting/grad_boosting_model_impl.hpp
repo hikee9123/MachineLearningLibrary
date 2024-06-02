@@ -27,12 +27,12 @@ namespace mlpack {
 //! Create an empty GradBoosting model.
 // GradBoostingModel constructor. 
 inline GradBoostingModel::GradBoostingModel() :
-    // weakLearnerType initialised to 0, i.e. Decision Stump
-    weakLearnerType(0),
-    // dsBoost value set to NULL
-    dsBoost(NULL),
-    // Set dimensionality to 0
-    dimensionality(0)
+  // weakLearnerType initialised to 0, i.e. Decision Stump
+  weakLearnerType(0),
+  // dsBoost value set to NULL
+  dsBoost(NULL),
+  // Set dimensionality to 0
+  dimensionality(0)
 {
   // Nothing to do.
 }
@@ -40,34 +40,34 @@ inline GradBoostingModel::GradBoostingModel() :
 //! Create the GradBoosting model with the given mappings and type.
 // For now, this constructor is unused.
 inline GradBoostingModel::GradBoostingModel(
-    const arma::Col<size_t>& mappings,
-    const size_t weakLearnerType) :
-    mappings(mappings),
-    weakLearnerType(weakLearnerType),
-    dsBoost(NULL),
-    dimensionality(0)
+  const arma::Col<size_t>& mappings,
+  const size_t weakLearnerType) :
+  mappings(mappings),
+  weakLearnerType(weakLearnerType),
+  dsBoost(NULL),
+  dimensionality(0)
 {
   // Nothing to do.
 }
 
 //! Copy constructor.
 inline GradBoostingModel::GradBoostingModel(const GradBoostingModel& other) :
-    mappings(other.mappings),
-    weakLearnerType(other.weakLearnerType),
-    dsBoost(other.dsBoost == nullptr ? nullptr :
-        // Defaulted to ID3 Decision Stump with arma::mat MatType
-        new GradBoosting(*other.dsBoost)),
-    dimensionality(other.dimensionality)
+  mappings(other.mappings),
+  weakLearnerType(other.weakLearnerType),
+  dsBoost(other.dsBoost == nullptr ? nullptr :
+    // Defaulted to ID3 Decision Stump with arma::mat MatType
+    new GradBoosting(*other.dsBoost)),
+  dimensionality(other.dimensionality)
 {
   // Nothing to do.
 }
 
 //! Move constructor.
 inline GradBoostingModel::GradBoostingModel(GradBoostingModel&& other) :
-    mappings(std::move(other.mappings)),
-    weakLearnerType(other.weakLearnerType),
-    dsBoost(other.dsBoost),
-    dimensionality(other.dimensionality)
+  mappings(std::move(other.mappings)),
+  weakLearnerType(other.weakLearnerType),
+  dsBoost(other.dsBoost),
+  dimensionality(other.dimensionality)
 {
   other.weakLearnerType = 0;
   other.dsBoost = NULL;
@@ -84,8 +84,8 @@ inline GradBoostingModel& GradBoostingModel::operator=(const GradBoostingModel& 
 
     delete dsBoost;
     dsBoost = (other.dsBoost == NULL) ? NULL :
-        // Defaulted to ID3 Decision Stump with arma::mat MatType
-        new GradBoosting(*other.dsBoost);
+      // Defaulted to ID3 Decision Stump with arma::mat MatType
+      new GradBoosting(*other.dsBoost);
 
     dimensionality = other.dimensionality;
   }
@@ -115,32 +115,35 @@ inline GradBoostingModel::~GradBoostingModel()
 }
 
 //! Train the model.
-inline void GradBoostingModel::Train(const arma::mat& data,
-                                 const arma::Row<size_t>& labels,
-                                 const size_t numClasses,
-                                 const size_t numModels)
+inline void GradBoostingModel::Train(
+  const arma::mat& data,
+  const arma::Row<size_t>& labels,
+  const size_t numClasses,
+  const size_t numModels)
 {
-    dimensionality = data.n_rows;
-    delete dsBoost;
-    
-    // Defaulted to ID3 Decision Stump with arma::mat MatType
-    dsBoost = new GradBoosting(data, labels, numClasses,
-        numModels);
+  dimensionality = data.n_rows;
+  delete dsBoost;
+  
+  // Defaulted to ID3 Decision Stump with arma::mat MatType
+  dsBoost = new GradBoosting(data, labels, numClasses,
+    numModels);
 }
 
 //! Classify test points. Calculate the probabilities.
-inline void GradBoostingModel::Classify(const arma::mat& testData,
-                                    arma::Row<size_t>& predictions,
-                                    arma::mat& probabilities)
+inline void GradBoostingModel::Classify(
+  const arma::mat& testData,
+  arma::Row<size_t>& predictions,
+  arma::mat& probabilities)
 {
-    dsBoost->Classify(testData, predictions, probabilities);
+  dsBoost->Classify(testData, predictions, probabilities);
 }
 
 //! Classify test points. Not including probabilities.
-inline void GradBoostingModel::Classify(const arma::mat& testData,
-                                    arma::Row<size_t>& predictions)
+inline void GradBoostingModel::Classify (
+  const arma::mat& testData,
+  arma::Row<size_t>& predictions)
 {
-    dsBoost->Classify(testData, predictions);
+  dsBoost->Classify(testData, predictions);
 }
 
 } // namespace mlpack

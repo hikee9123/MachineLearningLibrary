@@ -46,21 +46,21 @@ template<typename WeakLearnerType, typename MatType>
 template<typename WeakLearnerInType>
 GradBoosting<WeakLearnerType, MatType>::GradBoosting(
     
-    const MatType& data,
-    const arma::Row<size_t>& labels,
-    const size_t numClasses,
-    const size_t numModels,
+  const MatType& data,
+  const arma::Row<size_t>& labels,
+  const size_t numClasses,
+  const size_t numModels,
 
-    // Pre-initiated weak learner
-    const WeakLearnerInType& other,
+  // Pre-initiated weak learner
+  const WeakLearnerInType& other,
 
-    // This ensures that this constructor is only enabled if the WeakLearnerType 
-    // and WeakLearnerInType are the same type
-    const typename std::enable_if<
-        std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type*) :
-    
-    numClasses(numClasses),
-    numModels(numModels)
+  // This ensures that this constructor is only enabled if the WeakLearnerType 
+  // and WeakLearnerInType are the same type
+  const typename std::enable_if<
+    std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type*) :
+  
+  numClasses(numClasses),
+  numModels(numModels)
 
 {
   (void) TrainInternal<true>(data, labels, numClasses, other);
@@ -81,12 +81,12 @@ template<typename WeakLearnerType, typename MatType>
 // Variadic template to the Weak Learner arguments
 template<typename... WeakLearnerArgs>
 GradBoosting<WeakLearnerType, MatType>::GradBoosting(
-    const MatType& data,
-    const arma::Row<size_t>& labels,
-    const size_t numClasses,
-    const size_t numModels,
-    WeakLearnerArgs&&... weakLearnerArgs) :
-    numModels(numModels)
+  const MatType& data,
+  const arma::Row<size_t>& labels,
+  const size_t numClasses,
+  const size_t numModels,
+  WeakLearnerArgs&&... weakLearnerArgs) :
+  numModels(numModels)
 {
   WeakLearnerType other; // Will not be used.
   (void) TrainInternal<false>(data, labels, numClasses, other,
@@ -99,48 +99,46 @@ template<typename WeakLearnerType, typename MatType>
 template<typename WeakLearnerInType>
 // typename MatType::elem_type GradBoosting<WeakLearnerType, MatType>::Train(
 void GradBoosting<WeakLearnerType, MatType>::Train(
-        const MatType& data,
-        const arma::Row<size_t>& labels,
-        const size_t numClasses,
-        const WeakLearnerInType& learner,
-        const size_t numModels
-    )
+  const MatType& data,
+  const arma::Row<size_t>& labels,
+  const size_t numClasses,
+  const WeakLearnerInType& learner,
+  const size_t numModels
+)
 {
-    return TrainInternal<true>(data, labels, numClasses, learner);
+  return TrainInternal<true>(data, labels, numClasses, learner);
 }
 
 template<typename WeakLearnerType, typename MatType>
 template<typename WeakLearnerInType>
 // typename MatType::elem_type GradBoosting<WeakLearnerType, MatType>::Train(
 void GradBoosting<WeakLearnerType, MatType>::Train(
-        const MatType& data,
-        const arma::Row<size_t>& labels,
-        const size_t numClasses,
-        const size_t numModels,
-        const typename std::enable_if<
-            std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type* = 0
-    )
+  const MatType& data,
+  const arma::Row<size_t>& labels,
+  const size_t numClasses,
+  const size_t numModels,
+  const typename std::enable_if<
+    std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type* = 0
+)
 {
-    WeakLearnerType other; // Will not be used.
-    return TrainInternal<false>(data, labels, numClasses, other);
+  WeakLearnerType other; // Will not be used.
+  return TrainInternal<false>(data, labels, numClasses, other);
 }
-
-
 
 template<typename WeakLearnerType, typename MatType>
 template<typename... WeakLearnerArgs>
 // typename MatType::elem_type GradBoosting<WeakLearnerType, MatType>::Train(
 void GradBoosting<WeakLearnerType, MatType>::Train(
-        const MatType& data,
-        const arma::Row<size_t>& labels,
-        const size_t numClasses,
-        const size_t numModels,
-        WeakLearnerArgs&&... weakLearnerArgs
-    )
+  const MatType& data,
+  const arma::Row<size_t>& labels,
+  const size_t numClasses,
+  const size_t numModels,
+  WeakLearnerArgs&&... weakLearnerArgs
+)
 {
-    WeakLearnerType other; // Will not be used.
-    return TrainInternal<false>(data, labels, numClasses, other,
-        weakLearnerArgs...);
+  WeakLearnerType other; // Will not be used.
+  return TrainInternal<false>(data, labels, numClasses, other,
+    weakLearnerArgs...);
 }
 
 // Classify the given test point.
@@ -148,54 +146,54 @@ template<typename WeakLearnerType, typename MatType>
 template<typename VecType>
 void GradBoosting<WeakLearnerType, MatType>::Classify(const VecType& point) 
 {
-    size_t prediction;
-    Classify(point, prediction);
-
+  size_t prediction;
+  Classify(point, prediction);
 }
 
 template<typename WeakLearnerType, typename MatType>
 template<typename VecType>
 void GradBoosting<WeakLearnerType, MatType>::Classify(
-    const VecType& point,
-    size_t& prediction)
+  const VecType& point,
+  size_t& prediction)
 {
 
-    for(size_t i=0; i<weakLearners.size(); i++) 
-    {
-        size_t tempPred = weakLearners[i].Classify(point);
-        prediction += tempPred;
-    }
+  for (size_t i = 0; i < weakLearners.size(); i++) 
+  {
+    size_t tempPred = weakLearners[i].Classify(point);
+    prediction += tempPred;
+  }
 
 }
 
 
 template<typename WeakLearnerType, typename MatType>
-void Classify(const MatType& test,
-                    arma::Row<size_t>& predictedLabels) 
+void Classify(
+  const MatType& test,
+  arma::Row<size_t>& predictedLabels) 
 {
-    for(size_t i=0; i<test.size(); i++) {
-        size_t prediction;
-        Classify(test[i], prediction);
-        predictedLabels[i] = prediction;
-    }
+  for (size_t i = 0; i < test.size(); i++) {
+    size_t prediction;
+    Classify(test[i], prediction);
+    predictedLabels[i] = prediction;
+  }
 }
 
 
 
 template<
-    bool UseExistingWeakLearner,
-    typename MatType,
-    typename WeakLearnerType,
-    typename... WeakLearnerArgs
+  bool UseExistingWeakLearner,
+  typename MatType,
+  typename WeakLearnerType,
+  typename... WeakLearnerArgs
 >
 struct WeakLearnerTrainer
 {
   static WeakLearnerType Train(
-      const MatType& data,
-      const arma::Row<size_t>& labels,
-      const size_t numClasses,
-      const WeakLearnerType& wl,
-      WeakLearnerArgs&&... /* weakLearnerArgs */)
+    const MatType& data,
+    const arma::Row<size_t>& labels,
+    const size_t numClasses,
+    const WeakLearnerType& wl,
+    WeakLearnerArgs&&... /* weakLearnerArgs */)
   {
     // Use the existing weak learner to train a new one with new weights.
     // API requirement: there is a constructor with this signature:
@@ -213,26 +211,26 @@ struct WeakLearnerTrainer
 
 
 template<
-    typename MatType,
-    typename WeakLearnerType,
-    typename... WeakLearnerArgs
+  typename MatType,
+  typename WeakLearnerType,
+  typename... WeakLearnerArgs
 >
 struct WeakLearnerTrainer<
-    false, MatType, WeakLearnerType, WeakLearnerArgs...
+  false, MatType, WeakLearnerType, WeakLearnerArgs...
 >
 {
   static WeakLearnerType Train(
-      const MatType& data,
-      const arma::Row<size_t>& labels,
-      const size_t numClasses,
-      const WeakLearnerType& /* wl */,
-      WeakLearnerArgs&&... weakLearnerArgs)
+    const MatType& data,
+    const arma::Row<size_t>& labels,
+    const size_t numClasses,
+    const WeakLearnerType& /* wl */,
+    WeakLearnerArgs&&... weakLearnerArgs)
   {
     // When UseExistingWeakLearner is false, we use the given hyperparameters.
     // (This is the preferred approach that supports more types of weak
     // learners.)
     return WeakLearnerType(data, labels, numClasses,
-        weakLearnerArgs...);
+      weakLearnerArgs...);
   }
 };
 
@@ -249,35 +247,35 @@ template<bool UseExistingWeakLearner, typename... WeakLearnerArgs>
 // It has return type ElemType
 // typename MatType::elem_type GradBoosting<WeakLearnerType, MatType>:: TrainInternal(
 void GradBoosting<WeakLearnerType, MatType>:: TrainInternal(
-    const MatType& data,
-    const arma::Row<size_t>& labels,
-    const size_t numModels,
-    const size_t numClasses,
-    const WeakLearnerType& wl,
-    WeakLearnerArgs&&... weakLearnerArgs) 
+  const MatType& data,
+  const arma::Row<size_t>& labels,
+  const size_t numModels,
+  const size_t numClasses,
+  const WeakLearnerType& wl,
+  WeakLearnerArgs&&... weakLearnerArgs) 
 {
 
-    weakLearners.clear();
-    
-    arma::Row<double> residue = labels; 
+  weakLearners.clear();
+  
+  arma::Row<double> residue = labels; 
 
-    for(size_t model = 0; model < numModels; model++) 
-    {
-        // weak learner is trained at this point idk how yet
+  for (size_t model = 0; model < numModels; model++) 
+  {
+    // weak learner is trained at this point idk how yet
 
-        WeakLearnerType w = WeakLearnerTrainer<
-            UseExistingWeakLearner, MatType, WeakLearnerType,
-            WeakLearnerArgs...
-        >::Train(data, predictions, numClasses, wl, weakLearnerArgs...);
+    WeakLearnerType w = WeakLearnerTrainer<
+      UseExistingWeakLearner, MatType, WeakLearnerType,
+      WeakLearnerArgs...
+    >::Train(data, predictions, numClasses, wl, weakLearnerArgs...);
 
-        weakLearners.push_back(w);
+    weakLearners.push_back(w);
 
-        arma::Row<double> predictions = residue;
-        w.Classify(data, predictions);
+    arma::Row<double> predictions = residue;
+    w.Classify(data, predictions);
 
-        residue = residue - predictions;
+    residue = residue - predictions;
         
-    }
+  }
 }
 
 }
