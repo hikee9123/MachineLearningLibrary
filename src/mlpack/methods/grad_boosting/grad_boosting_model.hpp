@@ -106,7 +106,7 @@ class GradBoostingModel {
         const arma::mat& data,
         const arma::Row<size_t>& labels,
         const size_t numClasses,
-        const size_t num_models
+        const size_t numModels
     );
 
     // ### CLASSIFY

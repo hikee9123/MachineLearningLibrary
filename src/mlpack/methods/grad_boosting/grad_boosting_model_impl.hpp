@@ -118,14 +118,14 @@ inline GradBoostingModel::~GradBoostingModel()
 inline void GradBoostingModel::Train(const arma::mat& data,
                                  const arma::Row<size_t>& labels,
                                  const size_t numClasses,
-                                 const size_t num_models)
+                                 const size_t numModels)
 {
     dimensionality = data.n_rows;
     delete dsBoost;
     
     // Defaulted to ID3 Decision Stump with arma::mat MatType
     dsBoost = new GradBoosting(data, labels, numClasses,
-        num_models);
+        numModels);
 }
 
 //! Classify test points. Calculate the probabilities.

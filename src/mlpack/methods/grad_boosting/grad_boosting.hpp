@@ -55,7 +55,7 @@ class GradBoosting {
      * @param data Input data.
      * @param labels Corresponding labels.
      * @param numClasses The number of classes.
-     * @param num_models Number of weak learners.
+     * @param numModels Number of weak learners.
      * @param weakLearnerParams... Any hyperparameters for the weak learner.
      */
     template<typename... WeakLearnerArgs>
@@ -63,7 +63,7 @@ class GradBoosting {
         const MatType& data,
         const arma::Row<size_t>& labels,
         const size_t numClasses,
-        const size_t num_models = 10,
+        const size_t numModels = 10,
         WeakLearnerArgs&&... weakLearnerArgs
     );
 
@@ -75,7 +75,7 @@ class GradBoosting {
      * @param data Input data.
      * @param labels Corresponding labels.
      * @param numClasses The number of classes.
-     * @param num_models Number of weak learners.
+     * @param numModels Number of weak learners.
      * @param other Weak learner that has already been initialized.
      */
     template<typename WeakLearnerInType>
@@ -83,7 +83,7 @@ class GradBoosting {
         const MatType& data,
         const arma::Row<size_t>& labels,
         const size_t numClasses,
-        const size_t num_models = 10,
+        const size_t numModels = 10,
         const WeakLearnerInType& other,
         const typename std::enable_if<
             std::is_same<WeakLearnerType, WeakLearnerInType>::value
@@ -94,7 +94,7 @@ class GradBoosting {
     size_t NumClasses() const { return numClasses; }
 
     //! Get the number of weak learners .
-    size_t NumModels() const { return num_models; }
+    size_t NumModels() const { return numModels; }
 
     //! Get the weights for the given weak learner.
     ElemType Alpha(const size_t i) const { return alpha[i]; }
@@ -115,14 +115,14 @@ class GradBoosting {
      * completely overwrite any model that has already been trained with this
      * object.
      *
-     * Default values are not used for `num_models`; instead, it is used to specify
+     * Default values are not used for `numModels`; instead, it is used to specify
      * the number of weak learners (models) to train during gradient boosting.
      *
      * @param data Dataset to train on.
      * @param labels Labels for each point in the dataset.
      * @param numClasses The number of classes.
      * @param learner Learner to use for training.
-     * @param num_models Number of weak learners (models) to train.
+     * @param numModels Number of weak learners (models) to train.
      */
     template<typename WeakLearnerInType>
     void Train(
@@ -130,7 +130,7 @@ class GradBoosting {
         const arma::Row<size_t>& labels,
         const size_t numClasses,
         const WeakLearnerInType& learner,
-        const size_t num_models
+        const size_t numModels
     );
 
     template<typename WeakLearnerInType>
@@ -138,7 +138,7 @@ class GradBoosting {
         const MatType& data,
         const arma::Row<size_t>& labels,
         const size_t numClasses,
-        const size_t num_models,
+        const size_t numModels,
         const typename std::enable_if<
             std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type* = 0
     );
@@ -149,13 +149,13 @@ class GradBoosting {
      * these are all the arguments to `WeakLearnerType::Train()` after `numClasses`
      * and `weights`.
      *
-     * Default values are not used for `num_models`; instead, it is used to specify
+     * Default values are not used for `numModels`; instead, it is used to specify
      * the number of weak learners (models) to train during gradient boosting.
      *
      * @param data Dataset to train on.
      * @param labels Labels for each point in the dataset.
      * @param numClasses The number of classes in the dataset.
-     * @param num_models Number of boosting rounds.
+     * @param numModels Number of boosting rounds.
      * @param weakLearnerArgs Hyperparameters to use for each weak learner.
      */
     template<typename... WeakLearnerArgs>
@@ -163,7 +163,7 @@ class GradBoosting {
         const MatType& data,
         const arma::Row<size_t>& labels,
         const size_t numClasses,
-        const size_t num_models,
+        const size_t numModels,
         WeakLearnerArgs&&... weakLearnerArgs
     );
 
@@ -211,7 +211,7 @@ class GradBoosting {
     template<bool UseExistingWeakLearner, typename... WeakLearnerArgs>
     void TrainInternal(const MatType& data,
                             const arma::Row<size_t>& labels,
-                            const size_t num_models,
+                            const size_t numModels,
                             const size_t numClasses,
                             const WeakLearnerType& wl,
                             WeakLearnerArgs&&... weakLearnerArgs);
@@ -219,10 +219,10 @@ class GradBoosting {
     //! The number of classes in the model.
     size_t numClasses;
     //! The number of weak learners in the model.
-    size_t num_models;
+    size_t numModels;
 
     //! The vector of weak learners.
-    std::vector<WeakLearnerType> weaklearners;
+    std::vector<WeakLearnerType> weakLearners;
     //! The weights corresponding to each weak learner.
     std::vector<ElemType> alpha;
 }; 

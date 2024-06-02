@@ -114,7 +114,7 @@ PARAM_MATRIX_OUT("probabilities", "Predicted class probabilities for each "
     "point in the test set.", "p");
 
 // Training parameter options.
-PARAM_INT_IN("num_learners", "Number of weak learners to use", "n", 1);
+PARAM_INT_IN("numLearners", "Number of weak learners to use", "n", 1);
 
 // Loading/saving of a model.
 PARAM_MODEL_IN(GradBoostingModel, "input_model", "Input Gradient Boosting model.", "m");
@@ -137,7 +137,7 @@ void BINDING_FUNCTION(util::Params& params, util::Timers& timers)
     ReportIgnoredParam(params, {{ "test", false }}, "predictions");
 
     // Training parameters are ignored if no training file is given.
-    ReportIgnoredParam(params, {{ "training", false }}, "num_learners");
+    ReportIgnoredParam(params, {{ "training", false }}, "numLearners");
 
     // If the user gave an input model but no test set, issue a warning.
     if (params.Has("input_model")) {
@@ -184,7 +184,7 @@ void BINDING_FUNCTION(util::Params& params, util::Timers& timers)
         data::NormalizeLabels(labelsIn, labels, m->Mappings());
 
         // Get other training parameters.
-        const int num_learners = params.Get<int>("num_learners");
+        const int numLearners = params.Get<int>("numLearners");
 
         // Count number of classes in labels.
         const size_t numClasses = m->Mappings().n_elem;
@@ -192,7 +192,7 @@ void BINDING_FUNCTION(util::Params& params, util::Timers& timers)
 
         // Start training. 
         timers.Start("grad_boosting_training");
-        m->Train(trainingData, labels, numClasses, num_learners);
+        m->Train(trainingData, labels, numClasses, numLearners);
         timers.Stop("grad_boosting_training");
     }
 
