@@ -103,7 +103,9 @@ void GradBoosting<WeakLearnerType, MatType>::Train(
   const arma::Row<size_t>& labels,
   const size_t numClasses,
   const WeakLearnerInType& learner,
-  const size_t numModels
+  const size_t numModels,
+  const typename std::enable_if<
+    std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type* = 0
 )
 {
   return TrainInternal<true>(data, labels, numClasses, learner);
@@ -116,9 +118,7 @@ void GradBoosting<WeakLearnerType, MatType>::Train(
   const MatType& data,
   const arma::Row<size_t>& labels,
   const size_t numClasses,
-  const size_t numModels,
-  const typename std::enable_if<
-    std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type* = 0
+  const size_t numModels
 )
 {
   WeakLearnerType other; // Will not be used.
@@ -144,10 +144,11 @@ void GradBoosting<WeakLearnerType, MatType>::Train(
 // Classify the given test point.
 template<typename WeakLearnerType, typename MatType>
 template<typename VecType>
-void GradBoosting<WeakLearnerType, MatType>::Classify(const VecType& point) 
+size_t GradBoosting<WeakLearnerType, MatType>::Classify(const VecType& point) 
 {
   size_t prediction;
   Classify(point, prediction);
+  return prediction;
 }
 
 template<typename WeakLearnerType, typename MatType>

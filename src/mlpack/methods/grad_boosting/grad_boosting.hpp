@@ -98,12 +98,6 @@ class GradBoosting
   //! Get the number of weak learners .
   size_t NumModels() const { return numModels; }
 
-  //! Get the weights for the given weak learner.
-  ElemType Alpha(const size_t i) const { return alpha[i]; }
-
-  //! Modify the weight for the given weak learner (be careful!).
-  ElemType& Alpha(const size_t i) { return alpha[i]; }
-
   //! Get the given weak learner.
   const WeakLearnerType& WeakLearner(const size_t i) const { return wl[i]; }
 
@@ -132,7 +126,9 @@ class GradBoosting
     const arma::Row<size_t>& labels,
     const size_t numClasses,
     const WeakLearnerInType& learner,
-    const size_t numModels
+    const size_t numModels,
+    const typename std::enable_if<
+      std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type* = 0
   );
 
   template<typename WeakLearnerInType>
@@ -140,9 +136,7 @@ class GradBoosting
     const MatType& data,
     const arma::Row<size_t>& labels,
     const size_t numClasses,
-    const size_t numModels,
-    const typename std::enable_if<
-      std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type* = 0
+    const size_t numModels
   );
 
   /**
@@ -175,7 +169,7 @@ class GradBoosting
    * @param point Test point.
    */
   template<typename VecType>
-  void Classify(const VecType& point);
+  size_t Classify(const VecType& point);
 
   /**
    * Classify the given test point and compute class probabilities.
@@ -204,7 +198,7 @@ class GradBoosting
    * Serialize the GradBoosting model.
    */
   template<typename Archive>
-  void serialize(Archive& ar, const uint32_t /* version */);
+  void Serialize(Archive& ar, const uint32_t version);
 
  private:
   /**

@@ -127,7 +127,7 @@ class GradBoostingModel {
 
   //! Serialize the model.
   template<typename Archive>
-  void serialize(Archive& ar, const uint32_t /* version */) 
+  void Serialize(Archive& ar, const uint32_t version) 
   {
     if (cereal::is_loading<Archive>()) 
     {
