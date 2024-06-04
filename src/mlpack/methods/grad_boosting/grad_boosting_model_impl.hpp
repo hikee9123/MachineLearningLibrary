@@ -39,9 +39,8 @@ inline GradBoostingModel::GradBoostingModel() :
 
 //! Create the GradBoosting model with the given mappings and type.
 // For now, this constructor is unused.
-inline GradBoostingModel::GradBoostingModel(
-  const arma::Col<size_t>& mappings,
-  const size_t weakLearnerType) :
+inline GradBoostingModel::GradBoostingModel(const arma::Col<size_t>& mappings,
+                                            const size_t weakLearnerType) :
   mappings(mappings),
   weakLearnerType(weakLearnerType),
   dsBoost(NULL),
@@ -130,18 +129,16 @@ inline void GradBoostingModel::Train(
 }
 
 //! Classify test points. Calculate the probabilities.
-inline void GradBoostingModel::Classify(
-  const arma::mat& testData,
-  arma::Row<size_t>& predictions,
-  arma::mat& probabilities)
+inline void GradBoostingModel::Classify(const arma::mat& testData,
+                                        arma::Row<size_t>& predictions,
+                                        arma::mat& probabilities)
 {
   dsBoost->Classify(testData, predictions, probabilities);
 }
 
 //! Classify test points. Not including probabilities.
-inline void GradBoostingModel::Classify (
-  const arma::mat& testData,
-  arma::Row<size_t>& predictions)
+inline void GradBoostingModel::Classify (const arma::mat& testData,
+                                          arma::Row<size_t>& predictions)
 {
   dsBoost->Classify(testData, predictions);
 }

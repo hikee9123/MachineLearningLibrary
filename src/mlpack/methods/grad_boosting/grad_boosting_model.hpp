@@ -62,7 +62,7 @@ class GradBoostingModel {
   //! Create the GradBoosting model with the given mappings and type.
   // For now, we're not using this constructor anywhere.
   GradBoostingModel(const arma::Col<size_t>& mappings,
-                  const size_t weakLearnerType);
+                    const size_t weakLearnerType);
 
 
 
@@ -103,21 +103,17 @@ class GradBoostingModel {
   // ### TRAINING
 
   //! Train the model, treat the data is all of the numeric type.
-  void Train(
-    const arma::mat& data,
-    const arma::Row<size_t>& labels,
-    const size_t numClasses,
-    const size_t numModels
-  );
+  void Train(const arma::mat& data,
+              const arma::Row<size_t>& labels,
+              const size_t numClasses,
+              const size_t numModels);
 
   // ### CLASSIFY
 
   //! Classify test points. With probability.
-  void Classify(
-    const arma::mat& testData,
-    arma::Row<size_t>& predictions,
-    arma::mat& probabilities
-  );
+  void Classify(const arma::mat& testData,
+                arma::Row<size_t>& predictions,
+                arma::mat& probabilities);
 
   //! Classify test points. Without probability.
   void Classify(

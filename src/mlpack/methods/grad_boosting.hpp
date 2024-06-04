@@ -1,6 +1,7 @@
 /**
  * @file grad_boosting.hpp
- *
+ * @author Abhimanyu Dayal
+ * 
  * Convenience include for mlpack/methods/grad_boosting/grad_boosting.hpp.
  *
  * mlpack is free software; you may redistribute it and/or modify it under the

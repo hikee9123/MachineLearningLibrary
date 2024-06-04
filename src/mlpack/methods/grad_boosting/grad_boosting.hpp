@@ -2,7 +2,13 @@
  * @file methods/grad_boosting/grad_boosting.hpp
  * @author Abhimanyu Dayal
  *
- * Gradient Boosting class. 
+ * Gradient Boosting class. Gradient Boosting uses weak learners (primarily 
+ * decision stumps), and trains them sequentially, such that future learners are 
+ * trained to detect the errors (or gradients) of previous learners. 
+ * The results obtained from all of these learners are subsequently 
+ * aggregated to give a final result.
+ * 
+ * 
  *
  * mlpack is free software; you may redistribute it and/or modify it under the
  * terms of the 3-clause BSD license.  You should have received a copy of the
@@ -61,13 +67,11 @@ class GradBoosting
    * @param weakLearnerParams... Any hyperparameters for the weak learner.
    */
   template<typename... WeakLearnerArgs>
-  GradBoosting(
-    const MatType& data,
-    const arma::Row<size_t>& labels,
-    const size_t numClasses,
-    const size_t numModels = 10,
-    WeakLearnerArgs&&... weakLearnerArgs
-  );
+  GradBoosting(const MatType& data,
+                const arma::Row<size_t>& labels,
+                const size_t numClasses,
+                const size_t numModels = 10,
+                WeakLearnerArgs&&... weakLearnerArgs);
 
   /**
    * Constructor takes an already-initialized weak learner; all other
@@ -81,16 +85,14 @@ class GradBoosting
    * @param other Weak learner that has already been initialized.
    */
   template<typename WeakLearnerInType>
-  GradBoosting (
-    const MatType& data,
-    const arma::Row<size_t>& labels,
-    const size_t numClasses,
-    const size_t numModels = 10,
-    const WeakLearnerInType& other,
-    const typename std::enable_if<
-      std::is_same<WeakLearnerType, WeakLearnerInType>::value
-    >::type* = 0
-  );
+  GradBoosting (const MatType& data,
+                const arma::Row<size_t>& labels,
+                const size_t numClasses,
+                const size_t numModels = 10,
+                const WeakLearnerInType& other,
+                const typename std::enable_if<
+                  std::is_same<WeakLearnerType, WeakLearnerInType>::value
+                >::type* = 0);
 
   //! Get the number of classes this model is trained on.
   size_t NumClasses() const { return numClasses; }
@@ -121,23 +123,19 @@ class GradBoosting
    * @param numModels Number of weak learners (models) to train.
    */
   template<typename WeakLearnerInType>
-  void Train(
-    const MatType& data,
-    const arma::Row<size_t>& labels,
-    const size_t numClasses,
-    const WeakLearnerInType& learner,
-    const size_t numModels,
-    const typename std::enable_if<
-      std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type* = 0
-  );
+  void Train(const MatType& data,
+              const arma::Row<size_t>& labels,
+              const size_t numClasses,
+              const WeakLearnerInType& learner,
+              const size_t numModels,
+              const typename std::enable_if<
+                std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type* = 0);
 
   template<typename WeakLearnerInType>
-  void Train(
-    const MatType& data,
-    const arma::Row<size_t>& labels,
-    const size_t numClasses,
-    const size_t numModels
-  );
+  void Train(const MatType& data,
+              const arma::Row<size_t>& labels,
+              const size_t numClasses,
+              const size_t numModels);
 
   /**
    * Train Gradient Boosting on the given dataset, using the given parameters.
@@ -155,13 +153,11 @@ class GradBoosting
    * @param weakLearnerArgs Hyperparameters to use for each weak learner.
    */
   template<typename... WeakLearnerArgs>
-  void Train(
-    const MatType& data,
-    const arma::Row<size_t>& labels,
-    const size_t numClasses,
-    const size_t numModels,
-    WeakLearnerArgs&&... weakLearnerArgs
-  );
+  void Train(const MatType& data,
+              const arma::Row<size_t>& labels,
+              const size_t numClasses,
+              const size_t numModels,
+              WeakLearnerArgs&&... weakLearnerArgs);
 
   /**
    * Classify the given test point.
@@ -178,9 +174,8 @@ class GradBoosting
    * @param prediction Will be filled with the predicted class of `point`.
    */
   template<typename VecType>
-  void Classify(
-    const VecType& point,
-    size_t& prediction);
+  void Classify(const VecType& point,
+                size_t& prediction);
 
   /**
    * Classify the given test points.
@@ -189,9 +184,8 @@ class GradBoosting
    * @param predictedLabels Vector in which the predicted labels of the test
    *      set will be stored.
    */
-  void Classify(
-    const MatType& test,
-    arma::Row<size_t>& predictedLabels);
+  void Classify(const MatType& test,
+                arma::Row<size_t>& predictedLabels);
 
 
   /**
@@ -207,13 +201,12 @@ class GradBoosting
    * `UseExistingWeakLearner` is true.
    */
   template<bool UseExistingWeakLearner, typename... WeakLearnerArgs>
-  void TrainInternal(
-    const MatType& data,
-    const arma::Row<size_t>& labels,
-    const size_t numModels,
-    const size_t numClasses,
-    const WeakLearnerType& wl,
-    WeakLearnerArgs&&... weakLearnerArgs);
+  void TrainInternal(const MatType& data,
+                      const arma::Row<size_t>& labels,
+                      const size_t numModels,
+                      const size_t numClasses,
+                      const WeakLearnerType& wl,
+                      WeakLearnerArgs&&... weakLearnerArgs);
 
   //! The number of classes in the model.
   size_t numClasses;
