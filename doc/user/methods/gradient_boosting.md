@@ -14,8 +14,9 @@ reducing the error of the overall model.
 #### Simple usage example:
 
 ```c++
-// Train a decision tree on random numeric data and predict labels on test data:
-// All data and labels are uniform random; 10 dimensional data, 5 classes.
+// Train a gradient boosting model on random numeric data and predict labels 
+// on test data: All data and labels are uniform random; 10 dimensional data, 
+// 5 classes.
 // Replace with a data::Load() call or similar for a real application.
 // numModels is a hyperparameter refering to the number of weak learners
 arma::mat dataset(10, 1000, arma::fill::randu); // 1000 points.
@@ -27,7 +28,7 @@ size_t numModels = 10;
 mlpack::GradBoosting gb;               // Step 1: create model.
 gb.Train(dataset, labels, 5, numModels);          // Step 2: train model.
 arma::Row<size_t> predictions;
-tree.Classify(testDataset, predictions); // Step 3: classify points.
+gb.Classify(testDataset, predictions); // Step 3: classify points.
 
 // Print some information about the test predictions.
 std::cout << arma::accu(predictions == 2) << " test points classified as class "
@@ -37,7 +38,7 @@ std::cout << arma::accu(predictions == 2) << " test points classified as class "
 
 #### Quick links:
 
- * [Constructors](#constructors): create `DecisionTree` objects.
+ * [Constructors](#constructors): create `GradientBoosting` objects.
  * [`Train()`](#training): train model.
  * [`Classify()`](#classification): classify with a trained model.
  * [Other functionality](#other-functionality) for loading, saving, and
@@ -123,20 +124,20 @@ Types of each argument are the same as in the table for constructors
 Once a `GradBoosting` is trained, the `Classify()` member function can be used
 to make class predictions for new data.
 
- * `size_t predictedClass = tree.Classify(point)`
+ * `size_t predictedClass = gb.Classify(point)`
     - ***(Single-point)***
     - Classify a single point, returning the predicted class.
 
 ---
 
- * `tree.Classify(point, prediction)`
+ * `gb.Classify(point, prediction)`
     - ***(Single-point)***
     - Classify a single point and compute class probabilities.
     - The predicted class is stored in `prediction`.
 
 ---
 
- * `tree.Classify(data, predictions)`
+ * `gb.Classify(data, predictions)`
     - ***(Multi-point)***
     - Classify a set of points.
     - The prediction for data point `i` can be accessed with `predictions[i]`.
@@ -179,7 +180,7 @@ See also the [simple usage example](#simple-usage-example) for a trivial use of
 
 ---
 
-Train a decision tree on mixed categorical data and save it:
+Train a gradient boosting model on mixed categorical data and save it:
 
 ```c++
 // Load a categorical dataset.
@@ -192,7 +193,7 @@ arma::Row<size_t> labels;
 // See https://datasets.mlpack.org/covertype.train.labels.csv.
 mlpack::data::Load("covertype.train.labels.csv", labels, true);
 
-// Create the tree.
+// Create the model object.
 mlpack::GradBoosting gb;
 // Train on the given dataset, specifying number of weak learners at 5.
 gb.Train(dataset, labels, 7 /* classes */, 5 /* number of weak learners */);
@@ -207,13 +208,13 @@ const size_t firstPrediction = gb.Classify(testDataset.col(0));
 std::cout << "Predicted class of first test point is " << firstPrediction << "."
     << std::endl;
 
-// Save the tree to `tree.bin`.
+// Save the model to `gb.bin`.
 mlpack::data::Save("gb.bin", "gb", gb);
 ```
 
 ---
 
-Load a tree and print some information about it.
+Load a model and print some information about it.
 
 ```c++
 mlpack::GradBoosting gb;
@@ -221,7 +222,7 @@ mlpack::GradBoosting gb;
 // with `data::Save()`.
 mlpack::data::Load("gb.bin", "gb", gb, true);
 
-std::cout << "The number of weak learners being used by the tree is "
+std::cout << "The number of weak learners being used by the model is "
 << gb.NumModels() << "." << std::endl;
 
 ```
