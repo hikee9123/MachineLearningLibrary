@@ -77,29 +77,19 @@ void LogSoftMaxType<MatType>::ForwardImpl(const MatType& input,
   MatType maxInput = repmat(max(input), input.n_rows, 1);
   output = (maxInput - input);
 
-  // Approximation of the base-e exponential function. The acuracy however is
-  // about 0.00001 lower as using exp. Credits go to Leon Bottou.
-  output.transform([](double x)
-  {
-    //! Fast approximation of exp(-x) for x positive.
-    static constexpr double A0 = 1.0;
-    static constexpr double A1 = 0.125;
-    static constexpr double A2 = 0.0078125;
-    static constexpr double A3 = 0.00032552083;
-    static constexpr double A4 = 1.0172526e-5;
+  // Function to calculate Padé approximant for exp(-x) for x positive
+  auto padeApproximant = [](double x) {
+    static constexpr double numCoeffs[] = {120, -60, 12}; 
+    static constexpr double denCoeffs[] = {120, 60, 12}; 
 
-    if (x < 13.0)
-    {
-      double y = A0 + x * (A1 + x * (A2 + x * (A3 + x * A4)));
-      y *= y;
-      y *= y;
-      y *= y;
-      y = 1 / y;
+    double num = numCoeffs[0] + x * (numCoeffs[1] + x * numCoeffs[2]);
+    double den = denCoeffs[0] + x * (denCoeffs[1] + x * denCoeffs[2]);
 
-      return y;
-    }
+    return num / den;
+  };
 
-    return 0.0;
+  output.transform([padeApproximant](double x) {
+    return padeApproximant(x);
   });
   maxInput.each_row() += log(sum(output));
   output = input - maxInput;
