@@ -84,15 +84,11 @@ class GradBoosting
    * @param numModels Number of weak learners.
    * @param other Weak learner that has already been initialized.
    */
-  template<typename WeakLearnerInType>
   GradBoosting (const MatType& data,
                 const arma::Row<size_t>& labels,
                 const size_t numClasses,
-                const size_t numModels = 10,
-                const WeakLearnerInType& other,
-                const typename std::enable_if<
-                  std::is_same<WeakLearnerType, WeakLearnerInType>::value
-                >::type* = 0);
+                const size_t numModels,
+                const WeakLearnerType& other);
 
   //! Get the number of classes this model is trained on.
   size_t NumClasses() const { return numClasses; }
@@ -101,10 +97,10 @@ class GradBoosting
   size_t NumModels() const { return numModels; }
 
   //! Get the given weak learner.
-  const WeakLearnerType& WeakLearner(const size_t i) const { return wl[i]; }
+  const WeakLearnerType& WeakLearner(const size_t i) const { return weakLearners[i]; }
 
   //! Modify the given weak learner (be careful!).
-  WeakLearnerType& WeakLearner(const size_t i) { return wl[i]; }
+  WeakLearnerType& WeakLearner(const size_t i) { return weakLearners[i]; }
 
   /**
    * Train GradBoosting on the given dataset. This method takes an initialized
@@ -119,19 +115,15 @@ class GradBoosting
    * @param data Dataset to train on.
    * @param labels Labels for each point in the dataset.
    * @param numClasses The number of classes.
-   * @param learner Learner to use for training.
    * @param numModels Number of weak learners (models) to train.
+   * @param learner Learner to use for training.
    */
-  template<typename WeakLearnerInType>
   void Train(const MatType& data,
               const arma::Row<size_t>& labels,
               const size_t numClasses,
-              const WeakLearnerInType& learner,
               const size_t numModels,
-              const typename std::enable_if<
-                std::is_same<WeakLearnerType, WeakLearnerInType>::value>::type* = 0);
+              const WeakLearnerType& learner);
 
-  template<typename WeakLearnerInType>
   void Train(const MatType& data,
               const arma::Row<size_t>& labels,
               const size_t numClasses,
@@ -195,6 +187,15 @@ class GradBoosting
   void Serialize(Archive& ar, const uint32_t version);
 
  private:
+
+  template<bool UseExistingWeakLearner>
+  void TrainInternal(
+    const MatType& data,
+    const arma::Row<size_t>& labels,
+    const size_t numModels,
+    const size_t numClasses,
+    const WeakLearnerType& wl);
+
   /**
    * Internal utility training function.  `wl` is not used if
    * `UseExistingWeakLearner` is false.  `weakLearnerArgs` are not used if
